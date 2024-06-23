@@ -45,7 +45,7 @@ arr2 = np.array(lst2)
 
 # to return samples from std normal/gaussian distribution cetenred around 0
 #print(np.random.randn(2)) # will create 1D array with 2 random numbers centered around 0
-#print(np.random.rand(4,3)) # will create 2D array with 4X2 random numbers centered around 0
+#print(np.random.randn(4,3)) # will create 2D array with 4X2 random numbers centered around 0
 
 
 # to create an array of random interger
