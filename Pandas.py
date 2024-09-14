@@ -181,9 +181,11 @@ df = pd.DataFrame({'col1': [1, 2, 3, 4], 'col2': [
 # print(df[(df['col1']>2) & (df['col2']==444)])
 # print(df[(df['col1']>2) | (df['col2']==444)])
 
+# print(df)
+
 df = pd.DataFrame([[1,'Soumick'],[2,'Lana'],[3,'Soumick']],columns=['EmpID','Name'])
 df.drop_duplicates(subset='Name', keep='first', inplace=True) # this will remove the duplicates from the Name column and keep the 1st occurrence only
-# print(df)
+# print(df.rename(columns={'col1':'Nums', 'col2':'long_num', 'col3':'alphabets'}, inplace=True)) # this will rename the column names 
 
 
 def times2(x):
