@@ -102,6 +102,7 @@ df = pd.DataFrame(d)
 
 # print(df.dropna(axis=1)) # This drops all columns that contains N/A values
 # print(df.dropna(thresh=2)) # thresh meams threshould value. Any row that contains N/A values >= that number only those rows will be dropped.
+# print(df.dropna(subset=['A'])) # This will drop all rows which will have value NaN for column 'A'.
 
 # print(df.fillna(value='Fill Val')) # tghis will fill the N\A values with "Fill Val" comment
 # print(df['A'].fillna(value=df['A'].mean())) # to fill value with mean fo the column
