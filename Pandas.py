@@ -181,6 +181,9 @@ df = pd.DataFrame({'col1': [1, 2, 3, 4], 'col2': [
 # print(df[(df['col1']>2) & (df['col2']==444)])
 # print(df[(df['col1']>2) | (df['col2']==444)])
 
+df['col2'] = df['col2'].astype(float).round(2) # this will change the data type of the column from integer to float which will have a round up value till two decimal places.
+df['col2'] = df['col2'].round().astype(int) # this will change the data type of the column from float to integer.
+
 df = pd.DataFrame([[1,'Soumick'],[2,'Lana'],[3,'Soumick']],columns=['EmpID','Name'])
 df.drop_duplicates(subset='Name', keep='first', inplace=True) # this will remove the duplicates from the Name column and keep the 1st occurrence only
 # print(df.rename(columns={'EmpId':'ID', 'Name':'Employee_Namee'}, inplace=True)) # this will rename the column names 
