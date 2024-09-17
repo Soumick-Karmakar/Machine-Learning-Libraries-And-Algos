@@ -184,11 +184,6 @@ df = pd.DataFrame({'col1': [1, 2, 3, 4], 'col2': [
 df['col2'] = df['col2'].astype(float).round(2) # this will change the data type of the column from integer to float which will have a round up value till two decimal places.
 df['col2'] = df['col2'].round().astype(int) # this will change the data type of the column from float to integer.
 
-df = pd.DataFrame([[1,'Soumick'],[2,'Lana'],[3,'Soumick']],columns=['EmpID','Name'])
-df.drop_duplicates(subset='Name', keep='first', inplace=True) # this will remove the duplicates from the Name column and keep the 1st occurrence only
-# print(df.rename(columns={'EmpId':'ID', 'Name':'Employee_Namee'}, inplace=True)) # this will rename the column names 
-
-
 def times2(x):
     return x*2
 # print(df['col1'].apply(times2)) # apply operator takes one function and applies over a selected row/col
@@ -202,10 +197,27 @@ def times2(x):
 # print(df.isnull()) # will return boolean values
 
 
+df = pd.DataFrame([[1,'Soumick'],[2,'Lana'],[3,'Soumick']],columns=['EmpID','Name'])
+df.drop_duplicates(subset='Name', keep='first', inplace=True) # this will remove the duplicates from the Name column and keep the 1st occurrence only
+# print(df.rename(columns={'EmpId':'ID', 'Name':'Employee_Namee'}, inplace=True)) # this will rename the column names 
+
+
+# Use of pivot table
 data = {'A': ['foo', 'foo', 'foo', 'bar', 'bar', 'bar'], 'B': ['one', 'one', 'two',
                                                                'two', 'one', 'one'], 'C': ['x', 'y', 'x', 'y', 'x', 'y'], 'D': [1, 3, 2, 5, 4, 1]}
 df = pd.DataFrame(data)
-# print(df.pivot_table(values="D",index=['A','B'],columns=['C']))
+# print(df.pivot_table(values="D",index=['A','B'],columns=['C']))  # this is for creating a pivot table
+
+# Use of melt
+data = {'product':['Umbrella','bag'],
+'quarter1':[500,200],
+'quarter2':[100,300],
+'quarter3':[400,600],
+'quarter4':[200,700]}
+
+df = pd.DataFrame(data)
+# print(df)
+# print(df.melt(id_vars=['product'], value_vars=['quarter1', 'quarter2', 'quarter3', 'quarter4'], var_name='quarter', value_name='sales'))
 
 
 ################ Data Input and Output #########################
