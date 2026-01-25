@@ -75,3 +75,21 @@ print("================================")
 print(corpus[0])
 print("================================")
 print(X[0].toarray())
+
+
+## Word2Vec
+import gensim
+from gensim.models import Word2Vec, KeyedVectors
+import gensim.downloader as api
+
+wv = api.load('word2vec-google-news-300')  # Pre-trained model
+print("Vector for king: ",wv['king'])
+print("Vector for man: ",wv['man'])
+print("Vectors similar to king: ",wv.most_similar('king'))
+print("Vectors similar to man: ",wv.most_similar('man'))
+print("Similarity between king and queen: ",wv.similarity('king', 'queen'))
+print("Similarity between man and woman: ",wv.similarity('man', 'woman'))
+
+vec = wv['king'] - wv['man'] + wv['woman']
+print("Vector similar to: ",wv.most_similar([vec]))
+
