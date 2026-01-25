@@ -93,3 +93,75 @@ print("Similarity between man and woman: ",wv.similarity('man', 'woman'))
 vec = wv['king'] - wv['man'] + wv['woman']
 print("Vector similar to: ",wv.most_similar([vec]))
 
+
+### Word2Vec and AvgWord2Vec
+import pandas as pd
+messages = pd.read_csv("spam_classification.csv", encoding='latin-1', names=['label', 'message'])
+
+# Data Cleaning and Preprocessing
+import re
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
+nltk.download('stopwords')
+
+ps = PorterStemmer()
+
+corpus = []
+for i in range(len(messages)):
+    review = re.sub('[^a-zA-Z]', ' ', messages['message'][i])
+    review = review.lower()
+    review = review.split()
+    review = [ps.stem(word) for word in review if not word in set(stopwords.words('english'))]
+    review = ' '.join(review)
+    corpus.append(review)
+
+y = pd.get_dummies(messages['label'])
+y = y.iloc[:, 1].values
+
+def print_accuracy_and_classification_report(X, y):
+    # Train Test Split
+    from sklearn.model_selection import train_test_split
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=0)
+
+    from sklearn.naive_bayes import MultinomialNB
+    spam_detect_model = MultinomialNB().fit(X_train, y_train)
+
+    # predictions
+    y_pred = spam_detect_model.predict(X_test)
+
+    # scores
+    from sklearn.metrics import accuracy_score, classification_report
+    print("Accuracy: ", accuracy_score(y_test, y_pred))
+    print("Classification Report: \n", classification_report(y_test, y_pred))
+
+
+##### Creating the Bag of Words model
+from sklearn.feature_extraction.text import CountVectorizer
+cv = CountVectorizer(max_features=2500, binary=True, ngram_range=(2,2))
+X = cv.fit_transform(corpus).toarray()
+
+print_accuracy_and_classification_report(X, y)
+
+
+##### Creating the TF-IDF model
+from sklearn.feature_extraction.text import TfidfVectorizer
+tfidf = TfidfVectorizer(max_features=2500, ngram_range=(1,2))
+X = tfidf.fit_transform(corpus).toarray()
+
+print_accuracy_and_classification_report(X, y)
+
+
+##### Creating a simple Word2Vec model
+import gensim
+model = gensim.models.Word2Vec(corpus, window=5, min_count=2, vector_size=100)
+# vector_size is the number of dimensions of the word vectors
+print("Vocabulary: ", model.wv.index_to_key)
+print("Corpus Count: ", model.corpus_count)
+print("Number of epochs: ", model.epochs)
+print("Words similar to 'prize': ", model.wv.most_similar('prize'))
+
+##### Creating an Avg Word2Vec model
+import numpy as np
+def avg_word2vec(doc):
+    return np.mean([model.wv[word] for word in doc if word in model.wv.index_to_key], axis=0)  
