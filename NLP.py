@@ -204,9 +204,9 @@ print("Integer Representation:\n", onehot_repr)
 
 
 ## Embedding Representation
-from tensorflow.keras.layers import Embedding
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.layers import Embedding #type: ignore
+from tensorflow.keras.models import Sequential #type: ignore
+from tensorflow.keras.preprocessing.sequence import pad_sequences #type: ignore
 import numpy as np
 
 sent_length = 8
