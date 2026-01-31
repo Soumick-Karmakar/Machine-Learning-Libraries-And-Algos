@@ -165,3 +165,65 @@ print("Words similar to 'prize': ", model.wv.most_similar('prize'))
 import numpy as np
 def avg_word2vec(doc):
     return np.mean([model.wv[word] for word in doc if word in model.wv.index_to_key], axis=0)  
+
+
+## LSTM RNN ####
+# link: https://colah.github.io/posts/2015-08-Understanding-LSTMs/  (for indepth architecture understanding)
+
+
+####### Word Embeddding Techniques ###################
+
+## Word Embedding Techniques Using Embedding Layer in TensorFlow/Keras
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
+import tensorflow as tf
+from tensorflow.keras.layers import TextVectorization   #type: ignore
+
+# Sample sentences
+sent = [
+    'the glass of milk',
+    'the glass of juice',
+    'the cup of tea',
+    'I am a good boy',
+    'I am a good developer',
+    'understand the meaning of words',
+    'your videos are good'
+]
+
+voc_size = 500
+
+## One Hot Representation
+
+vectorizer = TextVectorization(
+    max_tokens=voc_size,
+    output_mode="int"
+) # Text vectorization layer (text -> integer indices)
+vectorizer.adapt(sent) # Learn vocabulary from text
+onehot_repr = vectorizer(sent) # Convert sentences to integer sequences
+print("Integer Representation:\n", onehot_repr)
+
+
+## Embedding Representation
+from tensorflow.keras.layers import Embedding
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+import numpy as np
+
+sent_length = 8
+embedded_docs = pad_sequences(onehot_repr, padding='pre', maxlen=sent_length) #pre-padding: adding zeros at the beginning  post-padding: adding zeros at the end
+print("Pre-Padded Sequence:\n", embedded_docs)
+
+dim = 10 # Feature representation dimension
+model = Sequential()
+model.add(Embedding(voc_size, dim, input_length=sent_length)) # Embedding layer
+model.compile('adam', 'mse')
+
+# Make a prediction to initialize the layer
+model.predict(embedded_docs)
+print("Model summary after prediction:")
+print(model.summary())
+
+print(model.predict(embedded_docs))  # Embedded representation
+
+
+
