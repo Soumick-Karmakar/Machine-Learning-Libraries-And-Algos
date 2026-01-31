@@ -253,10 +253,9 @@ df.dropna(inplace=True)
 X = df.drop('real', axis=1)
 y = df['real']
 
-from tensorflow.keras.layers import Embedding, LSTM, Dense, TextVectorization
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.preprocessing.text import one_hot
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, LSTM, Dense, TextVectorization #type: ignore
+from tensorflow.keras.preprocessing.sequence import pad_sequences #type: ignore
+from tensorflow.keras.models import Sequential #type: ignore
 
 
 # Vocabulary size
