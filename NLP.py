@@ -420,3 +420,10 @@ print("Confusion Matrix: \n", cm)
 print("Accuracy Score: ", a_s)
 print("Classification Report: \n", cr)
 
+
+
+######### Transformer Architecture: Attention Mechanism ###########
+
+# Check from: https://jalammar.github.io/illustrated-transformer/ for better understanding of Attention Mechanism
+# Video explanation: https://www.youtube.com/watch?v=SMZQrJ_L1vo&list=PLZoTAELRMXVNNrHSKv36Lr3_156yCo6Nn&index=14
+
