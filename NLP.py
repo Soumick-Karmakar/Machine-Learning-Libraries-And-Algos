@@ -96,7 +96,7 @@ print("Vector similar to: ",wv.most_similar([vec]))
 
 ### Word2Vec and AvgWord2Vec
 import pandas as pd
-messages = pd.read_csv("spam_classification.csv", encoding='latin-1', names=['label', 'message'])
+messages = pd.read_csv("Datasets/spam_classification.csv", encoding='latin-1', names=['label', 'message'])
 
 # Data Cleaning and Preprocessing
 import re
@@ -246,14 +246,14 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
 
 import pandas as pd
-df = pd.read_csv("fake_news_train.csv")
+df = pd.read_csv("Datasets/fake_news_train.csv")
 df.dropna(inplace=True)
 
 # Get The Independent And Dependent features:
 X = df.drop('real', axis=1)
 y = df['real']
 
-from tensorflow.keras.layers import Embedding, LSTM, Dense, TextVectorization #type: ignore
+from tensorflow.keras.layers import Embedding, LSTM, Dense, TextVectorization # type: ignore  Dense is used to create neurons
 from tensorflow.keras.preprocessing.sequence import pad_sequences #type: ignore
 from tensorflow.keras.models import Sequential #type: ignore
 
@@ -333,4 +333,90 @@ print("Accuracy Score: ", a_s)
 print("Classification Report: \n", cr)
 
 
+
+############# Project: Fake News Classifier Using Bidirectional LSTM RNN ###################
+
+import tensorflow as tf
+import pandas as pd
+
+df = pd.read_csv("Datasets/fake_news_train.csv")
+df.dropna(inplace=True)
+
+# Get The Independent And Dependent features:
+X = df.drop('real', axis=1)
+y = df['real']
+
+# Check whether the dataset is balanced or not
+print(y.value_counts())
+
+from tensorflow.keras.layers import Embedding, LSTM, Dense, TextVectorization, Bidirectional #type: ignore  Dense is used to create neurons
+from tensorflow.keras.preprocessing.sequence import pad_sequences #type: ignore
+from tensorflow.keras.models import Sequential #type: ignore
+
+# Vocabulary size
+voc_size = 5000
+
+messages = X.copy()
+messages = messages.reset_index(drop=True)
+
+import nltk
+import re
+from nltk.corpus import stopwords
+
+nltk.download('stopwords')
+
+### Data Preprocessing
+from nltk.stem.porter import PorterStemmer
+ps = PorterStemmer()
+corpus = []
+for i in range(len(messages)):
+    review = re.sub('[^a-zA-Z]', ' ', messages['title'][i])
+    review = review.lower()
+    review = review.split()
+    review = [ps.stem(word) for word in review if not word in set(stopwords.words('english'))]
+    review = ' '.join(review)
+    corpus.append(review)
+
+### One Hot Representation
+vectorizer = TextVectorization(
+    max_tokens=voc_size,
+    output_mode="int"
+) # Text vectorization layer (text -> integer indices)
+
+vectorizer.adapt(corpus) # Learn vocabulary from text
+onehot_repr = vectorizer(corpus) # Convert sentences to integer sequences
+
+### Embedding Representation
+sent_length = 20
+# Padding the sequences to have equal length
+embedded_docs = pad_sequences(onehot_repr, padding='post', maxlen=sent_length)
+
+### Creating The Bidirectional LSTM RNN Model
+dim = 40 # Feature representation dimension
+model = Sequential()
+model.add(Embedding(voc_size, dim, input_length=sent_length)) # Embedding layer
+model.add(Bidirectional(LSTM(100))) # Bidirectional LSTM layer
+model.add(Dense(1, activation='sigmoid')) # Output layer
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+# Train Test Split
+from sklearn.model_selection import train_test_split
+import numpy as np
+X_final = np.array(embedded_docs)
+y_final = np.array(y)
+X_train, X_test, y_train, y_test = train_test_split(X_final, y_final, test_size=0.33, random_state=42)
+
+# Training the model
+model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=10, batch_size=32)
+y_pred = model.predict(X_test)
+y_pred = np.where(y_pred >= 0.5, 1, 0)
+
+# Model Evaluation
+from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
+cm = confusion_matrix(y_test, y_pred)
+a_s = accuracy_score(y_test, y_pred)
+cr = classification_report(y_test, y_pred)
+print("Confusion Matrix: \n", cm)
+print("Accuracy Score: ", a_s)
+print("Classification Report: \n", cr)
 

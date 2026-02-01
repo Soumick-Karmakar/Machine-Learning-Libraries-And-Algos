@@ -9,7 +9,7 @@ print("TensorFlow version:", tf.__version__)
 
 # Importing the dataset
 # Download the dataset from: https://www.kaggle.com/datasets/shubh0799/churn-modelling/data?select=Churn_Modelling.csv
-dataset = pd.read_csv('Churn_Modelling.csv')
+dataset = pd.read_csv('Datasets/Churn_Modelling.csv')
 X = dataset.iloc[:, 3:13]
 y = dataset.iloc[:, 13]
 
