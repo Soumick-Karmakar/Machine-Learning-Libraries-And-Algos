@@ -427,3 +427,48 @@ print("Classification Report: \n", cr)
 # Check from: https://jalammar.github.io/illustrated-transformer/ for better understanding of Attention Mechanism
 # Video explanation: https://www.youtube.com/watch?v=SMZQrJ_L1vo&list=PLZoTAELRMXVNNrHSKv36Lr3_156yCo6Nn&index=14
 
+
+
+
+
+############ Transformer and BERT Implementation Using Hugging Face #############
+import os
+from dotenv import load_dotenv
+load_dotenv()  # take environment variables from .env.
+token = os.getenv("HF_TOKEN") # Hugging Face Token
+
+from transformers import pipeline
+classifier = pipeline("sentiment-analysis") # Since no modekl is mentioned, so the default model distilbert-base-uncased-finetuned-sst-2-english gets applied.
+res = classifier(["I love programming in Python.", "I hate bugs in my code."])
+print(res)
+classifier = pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment")
+res = classifier(["Ti amo", "Amo il pitone"])
+print(res)
+
+
+from transformers import AutoTokenizer, TFAutoModelForSequenceClassification
+model_name = "nlptown/bert-base-multilingual-uncased-sentiment"
+# This model is in PyTorch format, so we need to set from_pt=True
+model = TFAutoModelForSequenceClassification.from_pretrained(model_name, from_pt=True, token=token)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+classifier = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
+res = classifier(["I love programming in Python.", "I hate bugs in my code."])
+print(res)
+
+
+# We can directly feed the sentences into the tokenizers
+from transformers import AutoTokenizer, TFAutoModelForSequenceClassification
+import numpy
+model_name = "nlptown/bert-base-multilingual-uncased-sentiment"
+# This model is in PyTorch format, so we need to set from_pt=True
+model = TFAutoModelForSequenceClassification.from_pretrained(model_name, from_pt=True, token=token)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+inputs = tokenizer(
+    ["I love programming in Python.", "I hate bugs in my code."], 
+    padding=True,
+    truncation=True,
+    max_length=512,
+    return_tensors="tf"
+    )
+for key, val in inputs.items():
+    print(f"{key}: {val.numpy().tolist()}")
